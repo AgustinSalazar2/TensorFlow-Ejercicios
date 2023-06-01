@@ -1,0 +1,87 @@
+Examen Parcial de TensorFlow	(Tema 4)		Alumno: Salazar Agustin		Fecha:24/05/23
+
+1 - Que función se utiliza para la limpieza automática de tensores en memoria, y en caso de querer mantener algún tensor en memoria una
+	vez terminada la función en cuestión, que método se utiliza para ello ?.
+
+La función que se utiliza para la limpieza automática de tensores en memoria es tf.dispose(). Esta función libera la memoria ocupada por los tensores que se pasan como argumentos.
+
+// Crea un tensor
+const tensor = tf.tensor([1, 2, 3]);
+
+// Realiza operaciones con el tensor...
+
+// Libera la memoria del tensor
+tf.dispose(tensor);
+
+
+Si deseas mantener un tensor en memoria incluso después de llamar a tf.dispose(), puedes utilizar el método tf.keep(). 
+Este método permite marcar un tensor específico para que no sea eliminado por el mecanismo de limpieza automática.
+
+// Crea un tensor
+const tensor = tf.tensor([1, 2, 3]);
+
+// Marca el tensor para mantenerlo en memoria
+const keptTensor = tf.keep(tensor);
+
+// Libera la memoria del tensor original
+tf.dispose(tensor);
+
+// El tensor todavía está disponible para su uso
+console.log(keptTensor.dataSync());
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2 - Cual es el cuarto valor agregado a un RGB que lo extiende y para que sirve. Escriba un tensor con con los valores máximos y mínimos que pueden tomar
+	el RGB con la extensión adicional planteada.
+
+El cuarto valor agregado a un modelo RGB que lo extiende se conoce como el componente de transparencia o canal alfa. 
+El canal alfa representa la opacidad o transparencia de un píxel en una imagen.
+
+Un tensor con los valores máximos y mínimos que pueden tomar los componentes Rojo (R), Verde (G), Azul (B) y Alfa (A) con la extensión adicional planteada sería:
+Tensor máximo: tf.tensor([255, 255, 255, 255]) //En este caso, cada componente tiene un valor máximo de 255, lo cual representa el color completamente saturado o el máximo nivel de opacidad.
+
+Tensor mínimo: tf.tensor([0, 0, 0, 0]) //En este caso, cada componente tiene un valor mínimo de 0, lo cual representa el color completamente apagado o el mínimo nivel de opacidad (píxel completamente transparente).
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+3 - Escriba un código en una sola linea que cree un tensor con la forma [10, 10] con números aleatorios (Random) del 1 al 4 y que el tensor solo 
+    muestre datos enteros, utilice el método propuesto en la sección API correspondiente del sitio de https://js.tensorflow.org/api/latest/.
+
+const tensor = tf.randomUniform([10, 10], 1, 5, 'int32');
+
+//Explicación del código:
+
+//tf.randomUniform([10, 10], 1, 5) crea un tensor de forma [10, 10] con números aleatorios en el rango de 1 a 4. 
+//El primer argumento [10, 10] especifica la forma del tensor. 
+//El segundo argumento 1 indica el valor mínimo y el tercer argumento 5 indica el valor máximo (exclusivo).
+//'int32' especifica que los números aleatorios generados deben ser enteros en lugar de valores de punto flotante.
+//El resultado es un tensor de forma [10, 10] que contiene números aleatorios enteros del 1 al 4.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+4 – Donde Puedo ejecutar un modelo de aprendizaje? Justifique su respuesta.
+   
+    a - CPU
+    b - GPU	
+    c - memoria RAM
+
+Si bien los modelos de aprendizaje se pueden ejecutar en la CPU, la GPU es generalmente preferida debido a su capacidad para realizar cálculos en paralelo y acelerar el procesamiento. 
+La memoria RAM es necesaria para almacenar los datos, pero no está directamente relacionada con la velocidad de cálculo del modelo. 
+La elección del dispositivo de ejecución dependerá de los recursos disponibles y los requisitos computacionales específicos del modelo.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+5 - Realice un sistema que entrene 525 épocas y que prediga el valor de Y para un 
+    valor x = 50 para la formula Y = 2X + 8 , ingresando para el entrenamiento 15 valores de pruebas 
+	comenzando por -3,  mostrando en pantalla el valor predicho de Y. Grafique la función de perdida.
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+6 - Crear la bandera de Paraguay con tensores de pixeles un canvas de mínimo 25 px de alto. Luego aumentar al doble de tamaño. 
+    Luego, invertirlo. Mostrando por pantalla la cantidad de bytes que consumen los tensores para cada caso.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Regresion lineal</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"> </script> -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
+  </head>
+  <body>
+    <h2>
+      El modelo entrena por 525 epocas: Presione el boton para entrenar
+    </h2>    
+    <input
+      type="button"
+      id="epocas-btn"
+      value="Entrenar"
+      onclick="entrenarModelo()"
+    />
+    <br>
+    <br>
+    <br>
+    <input type="number" id="valor-x" placeholder="Valor de X" value="50"/>
+    <input
+      type="button"
+      id="valor-x-btn"
+      value="Predecir"
+      onclick="predecirResultado()"
+    />
+    <br />
+    <h2>Resultado</h2>
+    <div id="micro-out-div"></div>
+
+    <script>
+      
+      //Realice un sistema que entrene 525 épocas y que prediga el valor de Y para un valor x = 50 para la formula Y = 2X + 8 , 
+      // ingresando para el entrenamiento 15 valores de pruebas comenzando por -3,  
+      // mostrando en pantalla el valor predicho de Y. Grafique la función de perdida.
+
+      // Create a simple model.
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
+
+      // Prepare the model for training: Specify the loss and the optimizer.
+      model.compile({ loss: "meanSquaredError", optimizer: "sgd" });
+
+      // Generate some synthetic data for training. (y = 2x + 8)
+      const xs = tf.tensor2d([-3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], [15, 1]);
+      const ys = tf.tensor2d([2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30], [15, 1]);
+
+
+      // Train the model using the data.
+      const entrenarModelo = async () => {
+        const arreglo = [];
+        
+        //El sistema entrena 525 epocas.
+        const epocas = 525;
+
+        //await model.fit(xs, ys, {epochs: epocas});
+        const history = await model.fit(xs, ys, {
+          epochs: epocas,
+          callbacks: {
+            onEpochEnd: (epoch, logs) => {
+              console.log(logs);
+              console.log("\n");
+              console.log(`Epoch ${epoch + 1} - Loss: ${logs.loss.toFixed(4)}`);
+              //arreglo.push({ index: epoch + 1, value: logs.loss.toFixed(4) });
+              arreglo.push({ x: epoch+1, y: logs.loss.toFixed(4) });
+            },
+          },
+        });
+
+        //Imprimir la perdida al final:
+        console.log(
+          `Final loss: ${history.history.loss[epocas - 1].toFixed(4)}`
+        );
+        alert("Termino de entrenar");
+
+        function renderizar() {
+          const data = { values: arreglo };
+          const surface = { name: "Perdidas respecto a las epocas de entrenamientos", tab: "Grafico lineal" };
+          tfvis.render.linechart(surface, data, {  });
+        }
+        renderizar();
+      };
+
+      // Use the model to do inference on a data point the model hasn't seen.
+      const predecirResultado = async () => {
+        const valorX = parseFloat(document.getElementById("valor-x").value);
+
+        document.getElementById("micro-out-div").innerText = model
+          .predict(tf.tensor2d([valorX], [1, 1]))
+          .dataSync()
+      };
+    </script>
+  </body>
+</html>
